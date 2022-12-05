@@ -127,4 +127,14 @@ data_programare date NOT NULL,
 FOREIGN KEY (cameraSpalatorie) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cameraStudenti) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
+DROP TABLE IF EXISTS cereri_reparatii;
+CREATE TABLE cereri_reparatii
+(id int NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
+cameraCuProbleme int NOT NULL,
+data_creare date NOT NULL,
+stadiu ENUM ("Necompletata", "Completata"),
+id_mester char(13),
+FOREIGN KEY (cameraCuProbleme) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (id_mester) REFERENCES mesteri(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
+
 #Trigger to check when adding to program_spalatorie that cameraSpalatorie is a 'Spalatorie' and cameratStudenti is a 'Dormitor'
