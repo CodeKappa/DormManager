@@ -1,140 +1,144 @@
-DROP DATABASE IF EXISTS DormManager;
-CREATE DATABASE DormManager;
+drop database if exists DormManager;
+create database DormManager;
 USE DormManager;
 
-DROP TABLE IF EXISTS complex_studentesc;
-CREATE TABLE complex_studentesc
-(nume varchar(50) NOT NULL UNIQUE PRIMARY KEY);
+-- Facilitati ----------------------------------------------------------------------------------
+CREATE TABLE complexStudentesc
+(nume varchar(50) not null unique primary key);
 
-DROP TABLE IF EXISTS camin;
 CREATE TABLE camin
-(id varchar(4) NOT NULL UNIQUE PRIMARY KEY,
-adresa varchar(200) NOT NULL,
-nr_camere int NOT NULL,
+(id varchar(4) not null unique primary key,
+adresa varchar(200) not null,
+nr_camere int not null,
 complex varchar(50),
-FOREIGN KEY(complex) REFERENCES complex_studentesc(nume) ON UPDATE CASCADE,
+FOREIGN KEY(complex) REFERENCES complexStudentesc(nume) ON UPDATE CASCADE ON DELETE CASCADE,
 CHECK (nr_camere > 0));
 
-DROP TABLE IF EXISTS camera;
-CREATE TABLE camera
-(id int AUTO_INCREMENT PRIMARY KEY, 
-nr_camera int NOT NULL,
-etaj int NOT NULL,
-camin varchar(50) NOT NULL,
-nr_locuri int NOT NULL,
-tip_camera ENUM ('Birou Admin', 'Casierie', 'Biblioteca', 'Sala de lectura', 'Dormitor', 'Baie', 'Oficiu', 'Spalatorie', 'Altele'),
-UNIQUE KEY(nr_camera, etaj, camin),
-FOREIGN KEY(camin) REFERENCES camin(id) ON UPDATE CASCADE,
-CHECK (nr_locuri >= 0));
+CREATE TABLE Camera
+(id int auto_increment primary key, 
+nr_camera int not null,
+etaj int not null,
+camin varchar(50) not null,
+nr_locuri int not null,
+tip_camera enum ('Birou Admin', 'Casierie', 'Biblioteca', 'Sala de lectura', 'Dormitor', 'Baie', 'Oficiu', 'Spalatorie', 'Altele'),
+CHECK (nr_locuri >= 0),
+FOREIGN KEY(camin) REFERENCES camin(id) ON UPDATE CASCADE ON DELETE CASCADE);
 
-DROP TABLE IF EXISTS camere_conectate;
-CREATE TABLE camere_conectate
-(camera1 int NOT NULL,
-camera2 int NOT NULL,
+CREATE TABLE CamereConectate
+(camera1 int not null,
+camera2 int not null,
+FOREIGN KEY(camera1) REFERENCES camera(id) ON UPDATE CASCADE ON DELETE CASCADE,
+FOREIGN KEY(camera2) REFERENCES camera(id) ON UPDATE CASCADE ON DELETE CASCADE);
 
-FOREIGN KEY(camera1) REFERENCES camera(id) ON UPDATE CASCADE,
-FOREIGN KEY(camera2) REFERENCES camera(id) ON UPDATE CASCADE);
-
-DROP TABLE IF EXISTS cantina;
-CREATE TABLE cantina
-(id int AUTO_INCREMENT UNIQUE PRIMARY KEY,
-nume varchar(50) NOT NULL UNIQUE,
-adresa varchar(200) NOT NULL,
+CREATE TABLE Cantina
+(id int auto_increment unique primary key,
+nume varchar(50) not null unique,
+adresa varchar(200) not null,
 complex varchar(50),
-FOREIGN KEY(complex) REFERENCES complex_studentesc(nume) ON UPDATE CASCADE);
+FOREIGN KEY(complex) REFERENCES complexStudentesc(nume) ON UPDATE CASCADE ON DELETE CASCADE);
 
-DROP TABLE IF EXISTS teren_de_fotbal;
-CREATE TABLE teren_de_fotbal
-(id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-nume varchar(50) NOT NULL UNIQUE,
-adresa varchar(200) NOT NULL,
+CREATE TABLE TerenDeFotbal
+(id int auto_increment not null primary key,
+nume varchar(50) not null unique,
+adresa varchar(200) not null,
 complex varchar(50),
-FOREIGN KEY(complex) REFERENCES complex_studentesc(nume) ON UPDATE CASCADE);
+FOREIGN KEY(complex) REFERENCES complexStudentesc(nume) ON UPDATE CASCADE ON DELETE CASCADE);
 
-DROP TABLE IF EXISTS persoane;
-CREATE TABLE persoane
-(cnp char(13) NOT NULL UNIQUE PRIMARY KEY,
-nume varchar(50) NOT NULL,
-prenume varchar(50) NOT NULL,
-adresa varchar(200) NOT NULL,
-nr_telefon char(12) UNIQUE NOT NULL,
-email varchar(50) UNIQUE NOT NULL);
+-- Persoane ------------------------------------------------------------------------------------
 
-DROP TABLE IF EXISTS super_admini;
-CREATE TABLE super_admini
-(cnp char(13) NOT NULL UNIQUE PRIMARY KEY,
+CREATE TABLE Persoane
+(cnp char(13) not null unique primary key,
+nume varchar(50) not null,
+prenume varchar(50) not null,
+adresa varchar(200) not null,
+nr_telefon char(12) unique not null,
+email varchar(50) unique not null);
+
+CREATE TABLE SuperAdmini
+(cnp char(13) not null unique primary key,
 FOREIGN KEY (cnp) REFERENCES persoane(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
 
-DROP TABLE IF EXISTS admini;
-CREATE TABLE admini
-(cnp char(13) NOT NULL UNIQUE PRIMARY KEY,
-id_camin varchar(4) NOT NULL,
+CREATE TABLE Admini
+(cnp char(13) not null unique primary key,
+id_camin varchar(4) not null,
 FOREIGN KEY (id_camin) REFERENCES camin(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cnp) REFERENCES persoane(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
 
-DROP TABLE IF EXISTS studenti;
-CREATE TABLE studenti
-(cnp char(13) NOT NULL UNIQUE PRIMARY KEY,
-sex ENUM ('M', 'F'),
-camera int NOT NULL,
+CREATE TABLE Studenti
+(cnp char(13) not null unique primary key,
+sex enum ('M', 'F'),
+camera int not null,
 FOREIGN KEY (camera) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cnp) REFERENCES persoane(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
 
-DROP TABLE IF EXISTS bucatari;
-CREATE TABLE bucatari
-(cnp char(13) NOT NULL UNIQUE PRIMARY KEY,
-cantina int NOT NULL,
+CREATE TABLE Bucatari
+(cnp char(13) not null unique primary key,
+cantina int not null,
 FOREIGN KEY (cnp) REFERENCES persoane(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cantina) REFERENCES cantina(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
-DROP TABLE IF EXISTS mesteri;
-CREATE TABLE mesteri
-(cnp char(13) NOT NULL UNIQUE PRIMARY KEY,
+CREATE TABLE Mesteri
+(cnp char(13) not null unique primary key,
 complex varchar(50),
 FOREIGN KEY (cnp) REFERENCES persoane(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (complex) REFERENCES complex_studentesc(nume) ON DELETE CASCADE ON UPDATE CASCADE);
+FOREIGN KEY (complex) REFERENCES complexStudentesc(nume) ON DELETE CASCADE ON UPDATE CASCADE);
 
-DROP TABLE IF EXISTS preparate_cantina;
-CREATE TABLE preparate_cantina
-(id int NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
-nume varchar(50) NOT NULL,
+-- Diverse -------------------------------------------------------------------------------------
+
+CREATE TABLE PreparateCantina
+(id int not null unique auto_increment primary key,
+nume varchar(50) not null,
 descriere varchar(200));
 
-DROP TABLE IF EXISTS meniu_cantina;
-CREATE TABLE meniu_cantina
-(id int NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
-cantina int NOT NULL,
-data_servirii DATE NOT NULL,
-preparat int NOT NULL,
-FOREIGN KEY (preparat) REFERENCES preparate_cantina(id) ON DELETE CASCADE ON UPDATE CASCADE,
+CREATE TABLE MeniuCantina
+(id int not null unique auto_increment primary key,
+cantina int not null,
+data_servirii DATE not null,
+preparat int not null,
+FOREIGN KEY (preparat) REFERENCES PreparateCantina(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cantina) REFERENCES cantina(id) ON DELETE CASCADE ON UPDATE CASCADE);
 	
-DROP TABLE IF EXISTS program_teren;
-CREATE TABLE program_teren
-(id int NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
-student char(13) NOT NULL,
-data_programare date NOT NULL,
-teren int NOT NULL,
+CREATE TABLE ProgramTeren
+(id int not null unique auto_increment primary key,
+student char(13) not null,
+data_programare date not null,
+teren int not null,
 FOREIGN KEY (student) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (teren) REFERENCES teren_de_fotbal(id) ON DELETE CASCADE ON UPDATE CASCADE);
+FOREIGN KEY (teren) REFERENCES TerenDeFotbal(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
-DROP TABLE IF EXISTS program_spalatorie;
-CREATE TABLE program_spalatorie
-(id int NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
-cameraSpalatorie int NOT NULL,
-cameraStudenti int NOT NULL,
-data_programare date NOT NULL,
+CREATE TABLE ProgramSpalatorie
+(id int not null unique auto_increment primary key,
+cameraSpalatorie int not null,
+cameraStudenti int not null,
+data_programare date not null,
 FOREIGN KEY (cameraSpalatorie) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cameraStudenti) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
-DROP TABLE IF EXISTS cereri_reparatii;
-CREATE TABLE cereri_reparatii
-(id int NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
-cameraCuProbleme int NOT NULL,
-data_creare date NOT NULL,
-stadiu ENUM ("Necompletata", "Completata"),
+CREATE TABLE CereriReparatii
+(id int not null unique auto_increment primary key,
+cameraCuProbleme int not null,
+data_creare date not null,
+stadiu enum ("Necompletata", "Completata"),
 id_mester char(13),
 FOREIGN KEY (cameraCuProbleme) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (id_mester) REFERENCES mesteri(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
 
-#Trigger to check when adding to program_spalatorie that cameraSpalatorie is a 'Spalatorie' and cameratStudenti is a 'Dormitor'
+CREATE TABLE CereriTransferCamere
+(id int not null unique auto_increment primary key,
+student1 char(13) not null,
+student2  char(13) not null,
+data_creare date not null,
+stadiu enum ("Necompletata", "Completata"),
+FOREIGN KEY (student1) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (student2) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
+
+CREATE TABLE CereriTransferCamin
+(id int not null unique auto_increment primary key,
+student char(13) not null,
+camin varchar(4) not null,
+data_creare date not null,
+stadiu enum ("Necompletata", "Completata"),
+FOREIGN KEY (student) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (camin) REFERENCES camin(id) ON DELETE CASCADE ON UPDATE CASCADE);
+
+#Trigger to check when adding to ProgramSpalatorie that cameraSpalatorie is a 'Spalatorie' and cameratStudenti is a 'Dormitor'
