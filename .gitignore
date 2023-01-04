@@ -5,3 +5,8 @@ Documentatie/Guidance_SoftwareProjectDesign.docx
 Documentatie/KovacsPaul_Proiect_IS.txt
 Documentatie/Diagrame
 Documentatie/Imagini
+.idea/
+*.iml
+*.iws
+*.class
+*.tmp
