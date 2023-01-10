@@ -1,12 +1,21 @@
 
-SQL/Diagrame
+#Documentatie
 Documentatie/KovacsPaul_usecase.pdf
 Documentatie/Guidance_SoftwareProjectDesign.docx
 Documentatie/KovacsPaul_Proiect_IS.txt
 Documentatie/Diagrame
 Documentatie/Imagini
+
+#SQL
+SQL/Diagrame
+*.mwb
+*.bak
+
+#Code
 .idea/
 *.iml
 *.iws
 *.class
 *.tmp
+DormManager/target/classes/images/
+notes.txt
