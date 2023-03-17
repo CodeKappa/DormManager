@@ -57,7 +57,7 @@ public class AbstractDAO<T>
      *
      * @param t     tuple to be inserted
      */
-    public void insert(T t)
+    public boolean insert(T t)
     {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -83,11 +83,13 @@ public class AbstractDAO<T>
                 }
             }
             statement.execute();
+            return true;
         }
         catch (SQLException e)
         {
             e.printStackTrace();
             GUI.showErrorMessage("Eroare la inserare");
+            return false;
         }
         finally
         {

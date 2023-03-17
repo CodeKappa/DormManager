@@ -18,7 +18,7 @@ public class ConnectionFactory {
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionFactory.class.getName());
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DBURL = "jdbc:mysql://DESKTOP-S2O4M1B:3306/DormManager";
+    private static final String DBURL = "jdbc:mysql://192.168.246.209:3306/DormManager";
     private static String USER = null;
     private static String PASS = null;
 
@@ -113,7 +113,7 @@ public class ConnectionFactory {
 
     public static String getUrl()
     {
-        return "192.168.123.209";
+        return "192.168.50.209";
     }
 }
 

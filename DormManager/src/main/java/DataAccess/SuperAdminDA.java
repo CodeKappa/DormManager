@@ -46,9 +46,11 @@ public class SuperAdminDA
         cameraDAO.insert(camera);
     }
 
-    public void insert(Persoane persoana)
+    public boolean insert(Persoane persoana)
     {
-        personaneDAO.insert(persoana);
+        if (personaneDAO.insert(persoana))
+            return true;
+        return false;
     }
     public void insert(Studenti studenti)
     {
@@ -174,20 +176,24 @@ public class SuperAdminDA
         Connection connection = null;
         PreparedStatement statement = null;
 
-        String user = name + "@" + ConnectionFactory.getUrl();
         ArrayList<String> query = new ArrayList<>();
-        query.add( "DROP USER IF EXISTS " + user);
-        query.add( "CREATE USER " + user + " IDENTIFIED BY '" + password + "'" );
-        query.add( "GRANT ALL PRIVILEGES ON *.* TO " + user + " WITH GRANT OPTION" );
+        query.add( "DROP USER IF EXISTS ?");
+        query.add( "CREATE USER ? IDENTIFIED BY ?" );
+        query.add( "GRANT ALL PRIVILEGES ON *.* TO ? WITH GRANT OPTION" );
 
         try
         {
             connection = ConnectionFactory.getConnection();
-            for (String q : query)
-            {
-                statement = connection.prepareStatement(q);
-                statement.executeUpdate();
-            }
+            statement = connection.prepareStatement(query.get(0));
+            statement.setString(1, name);
+            statement.executeUpdate();
+            statement = connection.prepareStatement(query.get(1));
+            statement.setString(1, name);
+            statement.setString(2, password);
+            statement.executeUpdate();
+            statement = connection.prepareStatement(query.get(2));
+            statement.setString(1, name);
+            statement.executeUpdate();
         }
         catch (SQLException e)
         {
@@ -206,13 +212,13 @@ public class SuperAdminDA
         Connection connection = null;
         PreparedStatement statement = null;
 
-        String user = email + "@" + ConnectionFactory.getUrl();
-        String query = "DROP USER IF EXISTS " + user;
+        String query = "DROP USER IF EXISTS ?";
 
         try
         {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
+            statement.setString(1, email);
             statement.executeUpdate();
         }
         catch (SQLException e)

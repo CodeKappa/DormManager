@@ -2,7 +2,7 @@ package Presentation.Listeners;
 
 import BusinessLogic.AdminBL;
 import Presentation.Controller;
-import Presentation.GUI.AdminGUI;
+import Presentation.GUI.AdminGUI.AdminGUI;
 import Presentation.GUI.GUI;
 
 import javax.swing.*;
@@ -18,6 +18,7 @@ public class AdminListeners
 
     String camin = null;
     String cnp;
+    String sex;
 
     public AdminListeners(Controller controller, AdminGUI theGUI, String email)
     {
@@ -47,6 +48,7 @@ public class AdminListeners
                 int selectedRow = table.getSelectedRow();
                 int col = 0;
                 cnp = (String) table.getValueAt(selectedRow, col);
+                sex = (String) table.getValueAt(selectedRow, col + 2);
             }
         });
 
@@ -72,9 +74,12 @@ public class AdminListeners
         theGUI.setRoomListener(new EventItemSelected()
         {
             @Override
-            public void selected(int index)
+            public void selected(int index, String tipCamera)
             {
-                adminBL.assignRoom(cnp, index);
+                if(tipCamera != null && !tipCamera.equals(sex))
+                    GUI.showErrorMessage("Studentii dintr-o camera trebuie sa aiba acelasi sex");
+                else
+                    adminBL.assignRoom(cnp, index);
                 ArrayList<ArrayList<String>> students = adminBL.getStudents();
                 ArrayList<ArrayList<String>> camere = adminBL.getCamere(camin);
                 theGUI.refresh(students, camere, theGUI.getList().getSelectedIndex());
@@ -82,7 +87,7 @@ public class AdminListeners
             }
 
             @Override
-            public void deleting(int index, ArrayList<String> nume, ArrayList<String> cnp)
+            public void removeStudentFromRoom(int index, ArrayList<String> nume, ArrayList<String> cnp)
             {
                 int x = 1;
                 ArrayList<String> aux = new ArrayList<>();
@@ -101,7 +106,7 @@ public class AdminListeners
                         possibilities,
                         possibilities[0]);
 
-                //If a string was returned, say so.
+                //If a string was returned.
                 if ((s != null) && (s.length() > 0))
                 {
                     String[] parts = s.split(" ");
@@ -110,16 +115,6 @@ public class AdminListeners
                     ArrayList<ArrayList<String>> camere = adminBL.getCamere(camin);
                     theGUI.refresh(students, camere, theGUI.getList().getSelectedIndex());
                 }
-
-                //If you're here, the return value was null/empty.
-                //setLabel("Come on, finish the sentence!");
-
-
-                //JOptionPane.showMessageDialog(null, "Nu se poate sterge un student dintr-o camera");
-               // adminBL.deleteStudent(index, nume, cnp);
-               // ArrayList<ArrayList<String>> students = adminBL.getStudents();
-               // ArrayList<ArrayList<String>> camere = adminBL.getCamere(camin);
-               // theGUI.refresh(students, camere, theGUI.getList().getSelectedIndex());
             }
         });
     }

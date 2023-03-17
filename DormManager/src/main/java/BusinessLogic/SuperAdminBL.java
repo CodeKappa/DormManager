@@ -24,15 +24,18 @@ public class SuperAdminBL
         return adminDA.getUserType(email);
     }
 
-    public void addPersoana(ArrayList<String> data)
+    public boolean addPersoana(ArrayList<String> data)
     {
         Persoane persoana = new Persoane(data.get(0), data.get(1), data.get(2), data.get(3), data.get(4), data.get(5));
-        adminDA.insert(persoana);
+        if (adminDA.insert(persoana))
+            return true;
+        return false;
     }
 
     public void addStudent(ArrayList<String> data)
     {
-        Studenti studenti = new Studenti(data.get(0), data.get(1), Integer.parseInt(data.get(2)));
+        Integer camera = data.get(2) == null ? null : Integer.parseInt(data.get(2));
+        Studenti studenti = new Studenti(data.get(0), data.get(1), camera);
         adminDA.insert(studenti);
     }
 

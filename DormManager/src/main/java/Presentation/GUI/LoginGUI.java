@@ -80,8 +80,6 @@ public class LoginGUI extends GUI
         usernameField = (JTextField) createField(15, false);
         passwordField = (JPasswordField) createField(15, true);
 
-        //todo remove
-        usernameField.setText("admin");
         passwordField.setText("3321");
 
         loginButton = createButton("LOGIN");

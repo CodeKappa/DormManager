@@ -1,7 +1,7 @@
 package Presentation.Listeners;
 
 import Presentation.Controller;
-import Presentation.GUI.MesterGUI;
+import Presentation.GUI.MesterGUI.MesterGUI;
 
 public class MesterListeners
 {
@@ -12,6 +12,11 @@ public class MesterListeners
     {
         this.controller = controller;
         this.theGUI = theGUI;
-        //addLoginListener();
+
+        theGUI.addLogoutListener(e ->
+        {
+            controller.logout();
+        });
+
     }
 }

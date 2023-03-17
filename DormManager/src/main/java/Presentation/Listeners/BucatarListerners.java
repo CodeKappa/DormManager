@@ -1,7 +1,7 @@
 package Presentation.Listeners;
 
 import Presentation.Controller;
-import Presentation.GUI.BucatarGUI;
+import Presentation.GUI.BucatarGUI.BucatarGUI;
 
 public class BucatarListerners
 {
@@ -12,6 +12,9 @@ public class BucatarListerners
     {
         this.controller = controller;
         this.theGUI = theGUI;
-        //addLoginListener();
+        theGUI.addLogoutListener(e ->
+        {
+            controller.logout();
+        });
     }
 }

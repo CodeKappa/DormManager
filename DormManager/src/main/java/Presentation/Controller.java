@@ -2,8 +2,12 @@ package Presentation;
 
 import BusinessLogic.SuperAdminBL;
 import DataAccess.Connection.ConnectionFactory;
-import Model.UserType;
 import Presentation.GUI.*;
+import Presentation.GUI.AdminGUI.AdminGUI;
+import Presentation.GUI.BucatarGUI.BucatarGUI;
+import Presentation.GUI.MesterGUI.MesterGUI;
+import Presentation.GUI.StudentGUI.StudentGUI;
+import Presentation.GUI.SuperAdminGUI.SuperAdminGUI;
 import Presentation.Listeners.*;
 
 import java.sql.Connection;
@@ -35,9 +39,6 @@ public class Controller
         theGUI = new LoginGUI();
         addLoginListener((LoginGUI) theGUI);
         theGUI.setVisible(true);
-        //switchGUI(new SuperAdminGUI(), GUIType.SUPER_ADMIN);
-        //todo remove
-        ((LoginGUI) theGUI).loginButton.doClick();
     }
 
     /**
@@ -50,7 +51,7 @@ public class Controller
 
         switch (guiType)
         {
-            case STUDENT ->  new StudentListeners(this, (StudentGUI) theGUI);
+            case STUDENT ->  new StudentListeners(this, (StudentGUI) theGUI, name);
             case ADMINISTRATOR ->  new AdminListeners(this, (AdminGUI) theGUI, name);
             case MESTER ->  new MesterListeners(this, (MesterGUI) theGUI);
             case BUCATAR ->  new BucatarListerners(this, (BucatarGUI) theGUI);
@@ -79,7 +80,7 @@ public class Controller
             {
                 switch (SuperAdminBL.getUserType(username))
                 {
-                    case Student -> switchGUI(new StudentGUI(), GUIType.STUDENT, null);
+                    case Student -> switchGUI(new StudentGUI(), GUIType.STUDENT, username);
                     case Admin -> switchGUI(new AdminGUI(), GUIType.ADMINISTRATOR, username);
                     case Mester -> switchGUI (new MesterGUI(), GUIType.MESTER, null);
                     case Bucatar -> switchGUI(new BucatarGUI(), GUIType.BUCATAR, null);

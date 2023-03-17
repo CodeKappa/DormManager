@@ -68,12 +68,13 @@ public class AdminDA
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        String query = "select * from camera where camin = '" + camin + "'";
+        String query = "select * from camera where tip_camera = 'Dormitor' and camin = ?";
 
         try
         {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
+            statement.setString(1, camin);
             resultSet = statement.executeQuery();
 
             ArrayList<ArrayList<String>> result = new ArrayList<>();
@@ -110,12 +111,13 @@ public class AdminDA
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        String query = "select a.id_camin from admini a where a.cnp = " + cnp;
+        String query = "select a.id_camin from admini a where a.cnp = ?";
 
         try
         {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
+            statement.setString(1, cnp);
             resultSet = statement.executeQuery();
 
             String result = null;
@@ -146,12 +148,13 @@ public class AdminDA
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        String query = "select cnp from persoane p where p.email = '" + email + "'";
+        String query = "select cnp from persoane p where p.email = ?";
 
         try
         {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
+            statement.setString(1, email);
             resultSet = statement.executeQuery();
 
             String result = null;
@@ -181,12 +184,14 @@ public class AdminDA
         Connection connection = null;
         PreparedStatement statement = null;
 
-        String query = "update studenti set camera = " + id + " where cnp = '" + cnp + "'";
+        String query = "update studenti set camera = ? where cnp = ?";
 
         try
         {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
+            statement.setObject(1, id);
+            statement.setString(2, cnp);
             statement.executeUpdate();
         }
         catch (SQLException e)

@@ -16,7 +16,7 @@ CREATE TABLE camera
 (id int auto_increment primary key, 
 nr_camera int not null,
 camin varchar(50) not null,
-nr_locuri int not null,
+nr_locuri int,
 tip_camera enum ('Birou Admin', 'Casierie', 'Biblioteca', 'Sala de lectura', 'Dormitor', 'Baie', 'Oficiu', 'Spalatorie', 'Altele'),
 CHECK (nr_locuri >= 0),
 FOREIGN KEY(camin) REFERENCES camin(id) ON UPDATE CASCADE ON DELETE CASCADE);
@@ -62,7 +62,7 @@ FOREIGN KEY (cnp) REFERENCES persoane(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
 
 CREATE TABLE studenti
 (cnp char(13) not null unique primary key,
-sex enum ('M', 'F'),
+sex enum ('M', 'F') not null,
 camera int,
 FOREIGN KEY (camera) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cnp) REFERENCES persoane(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
@@ -89,7 +89,7 @@ descriere varchar(200));
 CREATE TABLE meniuCantina
 (id int not null unique auto_increment primary key,
 cantina int not null,
-data_servirii DATE not null,
+data_servirii DATETIME not null,
 preparat int not null,
 FOREIGN KEY (preparat) REFERENCES PreparateCantina(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cantina) REFERENCES cantina(id) ON DELETE CASCADE ON UPDATE CASCADE);
@@ -97,7 +97,7 @@ FOREIGN KEY (cantina) REFERENCES cantina(id) ON DELETE CASCADE ON UPDATE CASCADE
 CREATE TABLE programTeren
 (id int not null unique auto_increment primary key,
 student char(13) not null,
-data_programare date not null,
+data_programare DATETIME not null,
 teren int not null,
 FOREIGN KEY (student) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (teren) REFERENCES TerenDeFotbal(id) ON DELETE CASCADE ON UPDATE CASCADE);
@@ -106,15 +106,16 @@ CREATE TABLE programSpalatorie
 (id int not null unique auto_increment primary key,
 cameraSpalatorie int not null,
 cameraStudenti int not null,
-data_programare date not null,
+data_programare DATETIME not null,
+UNIQUE(cameraSpalatorie, data_programare),
 FOREIGN KEY (cameraSpalatorie) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (cameraStudenti) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 CREATE TABLE cereriReparatii
 (id int not null unique auto_increment primary key,
 cameraCuProbleme int not null,
-data_creare date not null,
-stadiu enum ("Necompletata", "Completata"),
+data_creare DATETIME not null,
+stadiu enum ("Necompletata", "Completata") not null,
 id_mester char(13),
 FOREIGN KEY (cameraCuProbleme) REFERENCES camera(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (id_mester) REFERENCES mesteri(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
@@ -123,8 +124,8 @@ CREATE TABLE cereriTransferCamere
 (id int not null unique auto_increment primary key,
 student1 char(13) not null,
 student2  char(13) not null,
-data_creare date not null,
-stadiu enum ("Necompletata", "Completata"),
+data_creare DATETIME not null,
+stadiu enum ("Necompletata", "Completata") not null,
 FOREIGN KEY (student1) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (student2) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE);
 
@@ -132,8 +133,8 @@ CREATE TABLE cereriTransferCamin
 (id int not null unique auto_increment primary key,
 student char(13) not null,
 camin varchar(4) not null,
-data_creare date not null,
-stadiu enum ("Necompletata", "Completata"),
+data_creare DATETIME not null,
+stadiu enum ("Necompletata", "Completata")not null,
 FOREIGN KEY (student) REFERENCES studenti(cnp) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (camin) REFERENCES camin(id) ON DELETE CASCADE ON UPDATE CASCADE);
 

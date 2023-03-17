@@ -4,7 +4,7 @@ import BusinessLogic.SuperAdminBL;
 import Model.UserType;
 import Presentation.Controller;
 import Presentation.GUI.GUI;
-import Presentation.GUI.SuperAdminGUI;
+import Presentation.GUI.SuperAdminGUI.SuperAdminGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -80,10 +80,21 @@ public class SuperAdminListeners
                     return;
                 }
             }
-            if (userData.get(12).equals("Student") && (userData.get(6).equals("") || userData.get(7).equals("")))
+            if (userData.get(12).equals("Student"))
             {
-                GUI.showErrorMessage("Toate campurile trebuie completate!");
-                return;
+                if (userData.get(6).equals(""))
+                {
+                    GUI.showErrorMessage("Toate campurile trebuie completate!");
+                    return;
+                }
+                else
+                {
+                    if (!(userData.get(6).equals("M") || userData.get(6).equals("F")))
+                    {
+                        GUI.showErrorMessage("Sexul trebuie sa fie M sau F!");
+                        return;
+                    }
+                }
             }
             if(userData.get(12).equals("Admin") && userData.get(8).equals(""))
             {
@@ -106,13 +117,16 @@ public class SuperAdminListeners
                 return;
             }
 
-            superAdminBL.addPersoana(new ArrayList<String> (userData.subList(0, 6)));
+            if(!superAdminBL.addPersoana(new ArrayList<String> (userData.subList(0, 6))))
+                return;
             if (userData.get(12).equals("Student"))
             {
                 ArrayList<String> data = new ArrayList<>();
                 data.add(userData.get(0));//cnp
                 data.add(userData.get(6));//sex
-                data.add(userData.get(7));//camera
+                // camera
+                if(userData.get(7).equals("")) data.add(null);
+                else data.add(userData.get(7));
                 superAdminBL.addStudent(data);
             }
             if (userData.get(12).equals("Admin"))
